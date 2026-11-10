@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monclova Grid Desk · Palantir Blueprint Telemetry</title>
+  <link rel="stylesheet" href="vendor/blueprint/blueprint-design-tokens.css" />
+  <link rel="stylesheet" href="vendor/blueprint/blueprint-icons.css" />
+  <link rel="stylesheet" href="vendor/blueprint/blueprint.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bp6-dark bp-foundry-body">
+  <div class="app-shell">
+    <!-- PALANTIR BLUEPRINT TOP NAVBAR (ALWAYS VISIBLE) -->
+    <nav class="bp6-navbar bp6-dark topbar">
+      <div class="bp6-navbar-group bp6-align-left brand-left">
+        <div class="foundry-emblem" aria-hidden="true">
+          <span class="bp6-icon bp6-icon-standard bp6-icon-layers"></span>
+        </div>
+        <div class="brand-titles">
+          <div class="bp6-navbar-heading brand-heading">
+            MONCLOVA DESK
+            <span class="bp6-tag bp6-minimal bp6-intent-primary zone-chip">SIN · 9 NODES</span>
+          </div>
+          <div class="brand-sub">Unified Zone Ops · MDA, MTR &amp; D+7</div>
+        </div>
+      </div>
+
+      <div class="bp6-navbar-group top-tabs-group">
+        <div class="bp6-tab-list nav-tab-list" role="tablist" aria-label="Operational Modes">
+          <button class="bp6-tab nav-tab" role="tab" aria-selected="true" data-tab="tab1" id="btn-tab1">
+            <span class="bp6-icon bp6-icon-standard bp6-icon-time"></span>
+            <span>1 · Day-Ahead</span>
+            <span class="bp6-tag bp6-minimal tag-mini">MDA</span>
+          </button>
+          <button class="bp6-tab nav-tab" role="tab" aria-selected="false" data-tab="tab2" id="btn-tab2">
+            <span class="bp6-icon bp6-icon-standard bp6-icon-pulse"></span>
+            <span>2 · Real-Time</span>
+            <span class="bp6-tag bp6-minimal tag-mini">MTR</span>
+          </button>
+          <button class="bp6-tab nav-tab" role="tab" aria-selected="false" data-tab="tab3" id="btn-tab3">
+            <span class="bp6-icon bp6-icon-standard bp6-icon-confirm"></span>
+            <span>3 · Settlement</span>
+            <span class="bp6-tag bp6-minimal tag-mini">D+7</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bp6-navbar-group bp6-align-right telemetry-pills">
+        <div class="telemetry-cell">
+          <span class="tel-label">MARKET CLOCK</span>
+          <span class="tel-val mono" id="top-clock-val">10:15 CST · -01:45</span>
+        </div>
+        <div class="bp6-navbar-divider"></div>
+        <div class="telemetry-cell">
+          <span class="tel-label">ZONE STATUS</span>
+          <span class="tel-val mono" id="top-price-val">$2,131/MWh Est.</span>
+        </div>
+        <span class="bp6-tag bp6-intent-danger alert-tag mono" id="top-alert-pill">
+          <span class="bp6-icon bp6-icon-standard bp6-icon-warning-sign" id="top-alert-icon"></span>
+          <span id="top-alert-val">SCARCITY &gt;$2,500</span>
+        </span>
+      </div>
+    </nav>
+
+    <!-- MAIN FOUNDRY WORKSPACE -->
+    <main class="workspace">
+      <!-- ==================== TAB 1: DAY-AHEAD PLANNER (MDA) ==================== -->
+      <section id="tab1" class="tab-panel active">
+        <div class="section-header-bar">
+          <div>
+            <h1 class="bp6-heading panel-h1">Day-Ahead Bidding Planner (MDA · Day D-1)</h1>
+            <p class="section-sub">Size hourly MW commitments before CENACE's 12:00 CST auction cutoff and broadcast shift advisories for cleared scarcity hours.</p>
+          </div>
+          <div class="toolbar-controls">
+            <div class="control-inline">
+              <span class="ctrl-lbl">OPERATING SCENARIO</span>
+              <div class="bp6-html-select">
+                <select id="t1-scenario-select">
+                  <option value="jun11_scarcity">Tomorrow Jun 11 · Evening Scarcity ($3,012)</option>
+                  <option value="jun12_normal">Jun 12 · Standard Evening Ramp ($1,507)</option>
+                  <option value="dec25_negative">Dec 25 · Negative Solar Surplus (-$53)</option>
+                </select>
+                <span class="bp6-icon bp6-icon-double-caret-vertical"></span>
+              </div>
+            </div>
+            <div class="bp6-segmented-control" id="t1-mode-toggle">
+              <button type="button" class="bp6-button bp6-intent-primary seg-btn" data-mode="combined">Pre-Noon Band + Cleared Alert</button>
+              <button type="button" class="bp6-button bp6-minimal seg-btn" data-mode="morning">Morning Bid Only</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 1 KPI Strip -->
+        <div class="kpi-grid">
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-blue">
+            <div class="kpi-label">EXPECTED MEAN &amp; BAND</div>
+            <div class="kpi-val mono" id="t1-kpi-mean">$935 <span class="unit">MXN/MWh</span></div>
+            <div class="kpi-meta" id="t1-kpi-range">P10 $460 – P90 $3,510/MWh</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-green">
+            <div class="kpi-label">CHEAP SOLAR WINDOW</div>
+            <div class="kpi-val mono" id="t1-kpi-cheap">HE 09 · $514</div>
+            <div class="kpi-meta">Midday valley · Optimal BESS charge &amp; heavy melt</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-red">
+            <div class="kpi-label">POST-AUCTION SHOCK ALERT</div>
+            <div class="kpi-val mono" id="t1-kpi-shock">HE 21 · $3,012</div>
+            <div class="kpi-meta" id="t1-kpi-shock-sub">2 hrs clear &gt;$2,500 threshold · Escalate shifts</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-amber">
+            <div class="kpi-label">PROJECTED D-1 LOCKED BILL</div>
+            <div class="kpi-val mono" id="t1-kpi-bill">MXN 1,037,127</div>
+            <div class="kpi-meta" id="t1-kpi-bill-sub">37.5 MW avg locked · Tail risk hedged</div>
+          </div>
+        </div>
+
+        <div class="two-col-main">
+          <!-- Left Main Chart Card -->
+          <div class="bp6-card bp6-elevation-1 chart-card">
+            <div class="card-head">
+              <div>
+                <h2 class="bp6-heading" id="t1-chart-title">Tomorrow (Jun 11, 2025) · Scarcity Evening Warning — 24h Forecast Band &amp; Cleared Alert</h2>
+                <div class="card-subtitle" id="t1-chart-sub">Single Monclova Zone Curve (06MON-115 · All 9 Substations Co-Move r=0.999997)</div>
+              </div>
+              <div class="legend-row">
+                <span class="leg-item"><i class="swatch sw-band"></i>P10–P90 Band</span>
+                <span class="leg-item"><i class="swatch sw-blue"></i>Expected MDA</span>
+                <span class="leg-item"><i class="swatch sw-red-dash"></i>Cleared MDA</span>
+                <span class="leg-item"><i class="swatch sw-amber-dash"></i>Break-Even</span>
+              </div>
+            </div>
+
+            <div class="svg-wrap" id="t1-chart-container"></div>
+
+            <!-- 24-Hour Risk & Bid Matrix Strip -->
+            <div class="regime-strip-wrap">
+              <div class="regime-strip-head">
+                <span class="mono">HOURLY DISPATCH MATRIX &amp; MW COMMITMENT (HE 01–24 CST)</span>
+                <span class="regime-legend">
+                  <span class="bp6-tag bp6-minimal bp6-intent-success">Cheap &lt;$700</span>
+                  <span class="bp6-tag bp6-minimal bp6-intent-primary">Baseload</span>
+                  <span class="bp6-tag bp6-minimal bp6-intent-warning">&gt; Break-Even</span>
+                  <span class="bp6-tag bp6-minimal bp6-intent-danger">Crisis &gt;$2,500</span>
+                </span>
+              </div>
+              <div class="hour-blocks" id="t1-hour-blocks"></div>
+            </div>
+          </div>
+
+          <!-- Right Action & Context Column -->
+          <div class="side-stack">
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <h2 class="bp6-heading">Hourly Bid Sizing Simulator</h2>
+                <span class="bp6-tag bp6-minimal bp6-intent-primary mono">42 MW LOAD</span>
+              </div>
+              <div class="slider-group">
+                <div class="slider-row">
+                  <label for="t1-base-hedge">Baseload Coverage (HE 01–18, 23–24)</label>
+                  <span class="slider-val mono" id="t1-base-hedge-val">88% (37 MW)</span>
+                </div>
+                <input type="range" id="t1-base-hedge" min="60" max="100" step="2" value="88" />
+              </div>
+              <div class="slider-group">
+                <div class="slider-row">
+                  <label for="t1-peak-hedge">Peak Hedge Lock-In (HE 19–22)</label>
+                  <span class="slider-val mono" id="t1-peak-hedge-val">95% (40 MW)</span>
+                </div>
+                <input type="range" id="t1-peak-hedge" min="50" max="100" step="5" value="95" />
+              </div>
+              <div class="slider-group">
+                <div class="slider-row">
+                  <label for="t1-breakeven">Break-Even Cost Threshold ($/MWh)</label>
+                  <span class="slider-val mono" id="t1-breakeven-val">$1,250 / MWh</span>
+                </div>
+                <input type="range" id="t1-breakeven" min="600" max="2200" step="50" value="1250" />
+              </div>
+              <div class="impact-box" id="t1-impact-box">
+                <div class="impact-row"><span>Committed MDA Volume</span><strong class="mono" id="t1-vol-mwh">900 / 1,008 MWh</strong></div>
+                <div class="impact-row"><span>Evening P90 Tail Shield</span><strong class="mono txt-green" id="t1-shield-mxn">MXN 53,464</strong></div>
+              </div>
+            </div>
+
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <h2 class="bp6-heading">Substation Uniformity Watch</h2>
+                <span class="bp6-tag bp6-minimal bp6-intent-success mono">SPREAD NORMAL</span>
+              </div>
+              <p class="callout-copy">
+                Single zone curve replaces 9 identical charts (intra-zone correlation <span class="mono">r = 0.999997</span>).
+              </p>
+              <div class="bp6-callout bp6-callout-icon bp6-compact bp6-intent-primary ahm-callout">
+                <span class="bp6-icon bp6-icon-standard bp6-icon-info-sign"></span>
+                <h4 class="bp6-heading mono">400 kV Node · 06AHM-400</h4>
+                <div class="ahm-metric mono" id="t1-ahm-delta">-$1.42 / MWh vs Zone Avg (-0.1%)</div>
+                <div class="ahm-sub">Uniform zone clearing applies across all 9 substations.</div>
+              </div>
+            </div>
+
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <h2 class="bp6-heading">Pre-Noon Desk Actions</h2>
+                <span class="bp6-tag bp6-minimal mono">12:00 CUTOFF</span>
+              </div>
+              <div class="btn-stack">
+                <button type="button" class="bp6-button bp6-fill bp6-intent-primary" id="t1-export-btn">
+                  <span class="bp6-icon bp6-icon-standard bp6-icon-export"></span>
+                  <span class="bp6-button-text">Export CENACE Bid Schedule (CSV)</span>
+                </button>
+                <button type="button" class="bp6-button bp6-fill bp6-intent-warning" id="t1-warn-btn">
+                  <span class="bp6-icon bp6-icon-standard bp6-icon-notifications"></span>
+                  <span class="bp6-button-text">Broadcast 24h Plant Shift Warning</span>
+                </button>
+              </div>
+              <div class="action-toast mono" id="t1-toast">Ready before 12:00 CST CENACE auction lock.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 2: REAL-TIME MONITOR (MTR) ==================== -->
+      <section id="tab2" class="tab-panel">
+        <div class="section-header-bar">
+          <div>
+            <h1 class="bp6-heading panel-h1">Real-Time Dispatch &amp; Risk Monitor (MTR · Operating Day)</h1>
+            <p class="section-sub">Compare live MTR prices against yesterday's locked MDA, diagnose anomalies in plain English, and execute BESS or load curtailment.</p>
+          </div>
+          <div class="toolbar-controls">
+            <div class="control-inline">
+              <span class="ctrl-lbl">SCENARIO</span>
+              <div class="bp6-html-select">
+                <select id="t2-scenario-select">
+                  <option value="jun10_scarcity">Jun 10, 2025 · 19:20 CST (EVENING SCARCITY)</option>
+                  <option value="may20_congestion">May 20, 2024 · Heatwave Regional Congestion</option>
+                </select>
+                <span class="bp6-icon bp6-icon-double-caret-vertical"></span>
+              </div>
+            </div>
+            <div class="bp6-segmented-control" id="t2-feed-toggle">
+              <button type="button" class="bp6-button bp6-intent-primary seg-btn" data-feed="scada">Live Utility SCADA</button>
+              <button type="button" class="bp6-button bp6-minimal seg-btn" data-feed="expost">Public CENACE (D-7 Lag)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blueprint Callout for SCADA vs Public CENACE D-7 Delay -->
+        <div class="bp6-callout bp6-callout-icon bp6-compact bp6-intent-success feed-callout" id="t2-feed-banner">
+          <span class="bp6-icon bp6-icon-standard bp6-icon-database" id="t2-feed-icon"></span>
+          <span class="feed-copy">
+            <strong id="t2-feed-title">LIVE UTILITY SCADA TELEMETRY CONNECTED:</strong>
+            <span id="t2-feed-desc">Streaming sub-hourly plant telemetry for active dispatch (Official CENACE public MTR API releases with a 7-day lag; toggle for Ex-Post Audit).</span>
+          </span>
+        </div>
+
+        <!-- Tab 2 KPI Strip -->
+        <div class="kpi-grid">
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-red">
+            <div class="kpi-label">LIVE MTR SPOT PRICE</div>
+            <div class="kpi-val mono" id="t2-kpi-mtr">$5,285.43 <span class="unit">/MWh</span></div>
+            <div class="kpi-meta" id="t2-kpi-mtr-sub">HE 20 Actual · Severe Peaker Scarcity</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-blue">
+            <div class="kpi-label">LOCKED YESTERDAY MDA</div>
+            <div class="kpi-val mono" id="t2-kpi-mda">$736.84 <span class="unit">/MWh</span></div>
+            <div class="kpi-meta">36 MW Hedged D-1 · 6 MW Unhedged Spot</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-amber">
+            <div class="kpi-label">REAL-TIME SPREAD (MTR − MDA)</div>
+            <div class="kpi-val mono" id="t2-kpi-spread">+$4,548.59 <span class="unit">/MWh</span></div>
+            <div class="kpi-meta">7.2× MDA Price · Peak BESS Arbitrage Spread</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-red" id="t2-exposure-card">
+            <div class="kpi-label">LIVE HOURLY DOLLAR EXPOSURE</div>
+            <div class="kpi-val mono" id="t2-kpi-exposure">-$27,292 <span class="unit">MXN/hr</span></div>
+            <div class="kpi-meta" id="t2-kpi-exposure-sub">Unmitigated 6 MW shortfall · Use Dispatch -&gt;</div>
+          </div>
+        </div>
+
+        <div class="two-col-main">
+          <!-- Left Dual Synchronized Charts -->
+          <div class="bp6-card bp6-elevation-1 chart-card">
+            <div class="card-head">
+              <div>
+                <h2 class="bp6-heading" id="t2-chart-title">Operating Day Jun 10, 2025 · 19:20 CST — Live MTR vs. Locked MDA &amp; 1–4h HistGBDT (L1) Outlook</h2>
+                <div class="card-subtitle">Top: Zone Trajectory &amp; Short-Term Horizon | Bottom: Hourly Real-Time Spread (MTR − MDA)</div>
+              </div>
+              <div class="legend-row">
+                <span class="leg-item"><i class="swatch sw-red"></i>Live MTR</span>
+                <span class="leg-item"><i class="swatch sw-blue"></i>Locked MDA</span>
+                <span class="leg-item"><i class="swatch sw-green-dash"></i>1–4h GBDT (L1)</span>
+              </div>
+            </div>
+            <div class="svg-wrap" id="t2-chart-container"></div>
+          </div>
+
+          <!-- Right Column: Plain-English Diagnosis + 06AHM-400 + Controls -->
+          <div class="side-stack">
+            <div class="bp6-callout bp6-callout-icon bp6-intent-danger diag-callout" id="t2-diag-card">
+              <span class="bp6-icon bp6-icon-standard bp6-icon-warning-sign"></span>
+              <div class="diag-top">
+                <h4 class="bp6-heading">Plain-English Anomaly Diagnosis</h4>
+                <span class="bp6-tag bp6-minimal bp6-intent-danger mono" id="t2-diag-badge">SIN SCARCITY</span>
+              </div>
+              <div class="diag-headline" id="t2-diag-headline">System-Wide Generation Scarcity — Not a Local Bottleneck</div>
+              <p class="diag-body" id="t2-diag-body">
+                CENACE Energy surged to $5,294/MWh with Local Congestion = $0.00. Moving load between local Monclova feeders cannot avoid this spike.
+              </p>
+            </div>
+
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <h2 class="bp6-heading">400 kV Node Divergence Callout</h2>
+                <span class="bp6-tag bp6-minimal bp6-intent-warning mono" id="t2-ahm-badge">DELTA -$9.27</span>
+              </div>
+              <div class="ahm-split">
+                <div>
+                  <div class="mini-lbl">ZONE MEAN (9)</div>
+                  <div class="mini-val mono" id="t2-zone-val">$5,294.90</div>
+                </div>
+                <div>
+                  <div class="mini-lbl">06AHM-400 (HV)</div>
+                  <div class="mini-val mono" id="t2-ahm-val">$5,285.63</div>
+                </div>
+                <div>
+                  <div class="mini-lbl">MAX–MIN SPAN</div>
+                  <div class="mini-val mono" id="t2-span-val">$35.50</div>
+                </div>
+              </div>
+              <div class="mini-nodes" id="t2-mini-nodes"></div>
+            </div>
+
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <h2 class="bp6-heading">Live Operator Dispatch</h2>
+                <span class="bp6-tag bp6-minimal bp6-intent-success mono" id="t2-bess-rec">BESS: DISCHARGE</span>
+              </div>
+              <div class="bess-status-row">
+                <span>10 MW / 20 MWh BESS · SOC <strong class="mono">82% (16.4 MWh)</strong></span>
+                <strong class="mono txt-green" id="t2-bess-state">SIGNAL: DISCHARGE NOW (+$4,549/MWh)</strong>
+              </div>
+              <div class="btn-stack">
+                <button type="button" class="bp6-button bp6-fill bp6-intent-danger" id="t2-curtail-btn">
+                  <span class="bp6-icon bp6-icon-standard bp6-icon-flash"></span>
+                  <span class="bp6-button-text">Trigger 12 MW EAF Curtailment (+Shift)</span>
+                </button>
+                <button type="button" class="bp6-button bp6-fill bp6-intent-success" id="t2-bess-btn">
+                  <span class="bp6-icon bp6-icon-standard bp6-icon-trending-up"></span>
+                  <span class="bp6-button-text">Dispatch 10 MW BESS Discharge</span>
+                </button>
+                <button type="button" class="bp6-button bp6-fill" id="t2-log-btn">
+                  <span class="bp6-icon bp6-icon-standard bp6-icon-ban-circle"></span>
+                  <span class="bp6-button-text">Log &amp; Tag Unusual Grid Emergency</span>
+                </button>
+              </div>
+              <div class="action-toast mono" id="t2-toast">No active override applied. Click actions to simulate mitigation impact.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: SETTLEMENT & REVIEW ==================== -->
+      <section id="tab3" class="tab-panel">
+        <div class="section-header-bar">
+          <div>
+            <h1 class="bp6-heading panel-h1">Settlement &amp; Performance Review (Weekly · Official CENACE D+7)</h1>
+            <p class="section-sub">Audit finalized utility invoices after CENACE's 7-day lag, measure net ROI vs. doing nothing, and flag extreme outliers prior to weekly retraining.</p>
+          </div>
+          <div class="toolbar-controls">
+            <span class="bp6-tag bp6-large bp6-minimal bp6-intent-primary mono">
+              <span class="bp6-icon bp6-icon-standard bp6-icon-tick-circle"></span>
+              <span>BILLING WINDOW: JUN 09 – JUN 15, 2025 · D+7 VERIFIED</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Tab 3 KPI Strip -->
+        <div class="kpi-grid">
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-green">
+            <div class="kpi-label">NET SAVINGS VS. DOING NOTHING</div>
+            <div class="kpi-val mono" id="t3-kpi-savings">MXN 828,677 <span class="unit">(-14.8%)</span></div>
+            <div class="kpi-meta">Avoided peak charges + BESS spreads vs passive baseline</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-blue">
+            <div class="kpi-label">AVOIDED PEAK &amp; SMART HEDGE</div>
+            <div class="kpi-val mono" id="t3-kpi-hedge">MXN 673,571</div>
+            <div class="kpi-meta" id="t3-kpi-hedge-sub">$397k EAF curtail + $277k D-1 pre-hedge</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-green">
+            <div class="kpi-label">CAPTURED BESS ARBITRAGE</div>
+            <div class="kpi-val mono" id="t3-kpi-bess">MXN 155,106</div>
+            <div class="kpi-meta">20 MWh midday solar charge → evening peak discharge</div>
+          </div>
+          <div class="bp6-card bp6-elevation-1 kpi-card kpi-blue">
+            <div class="kpi-label">OFFICIAL D+7 SETTLED INVOICE</div>
+            <div class="kpi-val mono" id="t3-kpi-settled">MXN 4,761,823</div>
+            <div class="kpi-meta" id="t3-kpi-settled-sub">Passive baseline: MXN 5,590,500 · 7/7 Days Settled</div>
+          </div>
+        </div>
+
+        <div class="two-col-equal">
+          <!-- Left Column: Weekly Bill Reconciliation Chart + Blueprint HTML Table -->
+          <div class="bp6-card bp6-elevation-1">
+            <div class="card-head">
+              <div>
+                <h2 class="bp6-heading">Weekly Bill Reconciliation &amp; Daily Avoided Cost (Jun 09 – Jun 15)</h2>
+                <div class="card-subtitle">Passive Baseline vs. Official D+7 Reconciled Invoice (MXN Thousands)</div>
+              </div>
+              <div class="legend-row">
+                <span class="leg-item"><i class="swatch sw-slate"></i>Settled D+7</span>
+                <span class="leg-item"><i class="swatch sw-green"></i>Net Savings</span>
+              </div>
+            </div>
+            <div class="svg-wrap compact-svg" id="t3-savings-chart"></div>
+
+            <div class="table-wrap">
+              <table class="bp6-html-table bp6-compact bp6-html-table-striped bp-table" id="t3-recon-table">
+                <thead>
+                  <tr>
+                    <th>Operating Day</th>
+                    <th>Mean MDA</th>
+                    <th>Peak MTR</th>
+                    <th>Passive Bill</th>
+                    <th>D+7 Settled</th>
+                    <th>Net Saved</th>
+                    <th>Audit</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right Column: Forecast Accuracy by Time of Day + Anomaly Governance -->
+          <div class="side-stack">
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <div>
+                  <h2 class="bp6-heading">Forecast Accuracy by Time of Day (HistGBDT L1 · 2025)</h2>
+                  <div class="card-subtitle">Highlights high-confidence daytime windows vs. volatile peaker hours</div>
+                </div>
+                <span class="bp6-tag bp6-minimal bp6-intent-primary mono">79.9% ≤$100</span>
+              </div>
+              <div class="tod-list" id="t3-tod-list"></div>
+            </div>
+
+            <div class="bp6-card bp6-elevation-1 side-card">
+              <div class="card-head compact">
+                <div>
+                  <h2 class="bp6-heading">Weekly Retrain Extreme-Event Governance</h2>
+                  <div class="card-subtitle">Approve regimes or exclude blackouts before automated weekly retrain</div>
+                </div>
+                <button type="button" class="bp6-button bp6-small bp6-intent-primary" id="t3-retrain-btn">
+                  <span class="bp6-icon bp6-icon-standard bp6-icon-confirm"></span>
+                  <span class="bp6-button-text">Commit Queue</span>
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table class="bp6-html-table bp6-compact bp6-html-table-striped bp-table" id="t3-anomaly-table">
+                  <thead>
+                    <tr>
+                      <th>Event Window</th>
+                      <th>Peak MTR / Root Cause</th>
+                      <th>Governance Status</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="action-toast mono" id="t3-toast">2 extreme events excluded; Jun 09–10 awaiting analyst sign-off.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="data/dashboard_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Challenge description
+source/Data Scientist Challenge.pdf
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
